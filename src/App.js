@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
 import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
@@ -10,15 +10,6 @@ import kp from './keypair.json';
 // Constants
 const TWITTER_HANDLE = '_buildspace';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-
-const TEST_GIFS = [
-  'https://media.giphy.com/media/RznOgiCuf4zUuRnfBr/giphy.gif',
-  'https://media1.giphy.com/media/119i1S64KnIhyM/giphy.gif',
-  'https://media2.giphy.com/media/cRNEpWTGQqhaV1s886/giphy.gif',
-  'https://media4.giphy.com/media/MWvoMiwpIJf3wjo1Vs/giphy.gif',
-  'https://media2.giphy.com/media/8wcFxKsV00z9HL8SCs/giphy.gif',
-  'https://media1.giphy.com/media/qKvZE6HI8gaDC/giphy.gif',
-]
 
 const { SystemProgram } = web3;
 const arr = Object.values(kp._keypair.secretKey);
@@ -165,7 +156,7 @@ const App = () => {
           {gifList.map((item, index)=> (
 
             <div className="gif-item" key={index}>
-              <img src={item.gifLink} />
+              <img src={item.gifLink} alt="A gif"/>
               {item.userAddress.toString()}
             </div>
           ))}
@@ -183,7 +174,7 @@ const App = () => {
     return () => window.removeEventListener('load', onLoad);
   }, []);
 
-  const getGifList = async() => {
+  const getGifList = useCallback(async() => {
     try {
       const provider = getProvider();
       const program = new Program(idl, programID, provider);
@@ -195,7 +186,7 @@ const App = () => {
       console.log("Error in getGifs: ", error);
       setGifList(null);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (walletAddress) {
@@ -203,7 +194,7 @@ const App = () => {
       getGifList();
     }
 
-  }, [walletAddress]);
+  }, [getGifList, walletAddress]);
 
   return (
     <div className="App">
