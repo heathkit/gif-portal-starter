@@ -111,6 +111,10 @@
   object-fit: cover;
 }
 
+.gif-item {
+  color: white;
+}
+
 .connected-container input[type='text'] {
   display: inline-block;
   color: white;
